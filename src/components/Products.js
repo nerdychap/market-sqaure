@@ -6,13 +6,15 @@ import { watchGetProducts } from '../store/action'
 import SingleProduct from './SingleProduct'
 
 const Products = () => {
-    const { data, isLoading } = useSelector(state => state.products)
+    const { isLoading } = useSelector(state => state.products)
     const query = useSelector(state => state.textFilter)
-    const filterdProducts = data.filter(({ title }) => title.toLowerCase().includes(query.toLowerCase()))
+    const products = useSelector(state => state.products.data.filter(({ title }) => title.toLowerCase().includes(query.toLowerCase())))
+
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(watchGetProducts())
     }, [dispatch])
+
     if (isLoading) return <Flex height="100%" justify="center" align="center">
         <Spinner
             thickness="4px"
@@ -22,10 +24,11 @@ const Products = () => {
             size="xl"
         />
     </Flex>
+
     return (
         <Grid templateColumns="repeat(auto-fit, 350px)" justifyContent="center" p={5} >
             {
-                filterdProducts.map(item => <SingleProduct key={item.id} item={item} />)
+                products.map(item => <SingleProduct key={item.id} item={item} />)
             }
         </Grid>
     )
